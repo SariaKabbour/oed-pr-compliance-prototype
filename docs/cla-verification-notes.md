@@ -34,17 +34,21 @@ It does not yet verify every possible contributor listed in the pull request des
 
 Planned tests:
 
-- Signed PR author should pass.
-- Unsigned PR author should fail.
-- Wrong or missing Sheet ID should fail.
-- Missing GitHub secret should fail.
-- Google Sheet not shared with service account should fail.
-- First-time outside contributor may require maintainer approval before the workflow runs.
-
+Tests:
+- Missing GitHub secret - failed
+- missing Sheet ID - failed
+- Missing GitHub secret - failed
+- Google Sheet not shared - failed
+- CLA box unchecked - unsigned - failed
+- CLA box checked - unsigned - failed
+- ClA box unchecked - signed - Pass
+- CLA box unchecked - signed - Pass
 ## Limitations
 
 - The username in the Sheet must match the pull request author's GitHub username.
 - This prototype does not prevent a pull request from being opened.
+- First-time outside contributor may require maintainer approval before the workflow runs.
+
 - It only provides a status check that can be used to block merging.
 - The current version checks the PR author only, not all contributors.
 - Production use would require OED maintainer approval for secrets, Google Sheet access, and workflow security.
