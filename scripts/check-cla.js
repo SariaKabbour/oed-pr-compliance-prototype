@@ -61,17 +61,15 @@ async function main() {
     const headers = rows[0];
     const dataRows = rows.slice(1);
 
-    // Find the column that stores contributor GitHub usernames.
+    // Find the column that stores contributor GitHub usernames. Column named is Github Username
+    // If the CLA response Sheet uses a different column name, update ("github") and ("username") to match the actual header.
+    
     const githubColumnIndex = headers.findIndex((header) => {
         const normalizedHeader = normalize(header);
 
         return (
             normalizedHeader.includes("github") &&
-            (
-                normalizedHeader.includes("username") ||
-                normalizedHeader.includes("user") ||
-                normalizedHeader.includes("handle")
-            )
+            normalizedHeader.includes("username")
         );
     });
 
