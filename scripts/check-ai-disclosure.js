@@ -140,15 +140,28 @@ if (aiUsedChecked) {
         missing.push("Responsibility checkbox");
     }
 }
-
+//AI disclosure error message
 //returns number of items in the array missing. If one error exist then error is printed.
+//fails github action if any required information is missing
 if (missing.length > 0) {
     console.error("AI disclosure check failed.");
-    console.error("Missing or incomplete items:");
+    console.error("The pull request description is missing or has incomplete AI disclosure information:");
+
     //goes through every item in the array missing and prints each error
     for (const item of missing) {
         console.error(`- ${item}`);
     }
+
+    console.error("");
+    console.error("How to fix the pull request:");
+    console.error("1. Open the pull request Conversation tab.");
+    console.error("2. Click the three-dot menu (...) on the pull request description.");
+    console.error("3. Select Edit.");
+    console.error("4. Complete the missing AI disclosure information.");
+    console.error("5. Click Update comment.");
+    console.error("");
+    console.error("The AI disclosure check will run again after the description is updated.");
+
     //ends loop
     process.exit(1);
 }
