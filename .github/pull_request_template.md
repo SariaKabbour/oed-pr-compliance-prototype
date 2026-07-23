@@ -25,6 +25,10 @@ The automated Signed CLA Verification check compares the pull request author's G
 
 - [ ] I acknowledge that I have signed the OED Contributor License Agreement.
 
+**Additional contributor GitHub username(s):**
+
+(Leave blank if none. If others contributed, list GitHub username(s), separated by commas.)
+
 ## Limitations
 
 Describe any issues that remain or work that should still be completed.
