@@ -17,7 +17,7 @@ If AI assistance was used, check each item after completing your own review.
 
 - [ ] I reviewed all AI-assisted output before submitting this pull request.
 - [ ] I verified that the AI-assisted work follows OED project requirements.
-- [ ] I take full responsibility for the correctness, quality, and licensing compatibility of this contribution.
+- [ ] I confirm that I and any listed contributors reviewed our work and followed OED quality and licensing requirements.
 
 ## Contributor License Agreement
 
