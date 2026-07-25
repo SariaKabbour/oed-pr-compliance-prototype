@@ -20,10 +20,116 @@ function normalize(value) {
         .toLowerCase()
         .replace(/^@/, "");
 }
+// Checking extra contributors
+//
+// Helper functions for checking extra contributors listed in the PR.
+// Some labels include special characters like parentheses.
+// This makes the label safe to use inside a regular expression.
+function escapeRegex(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// The template says to leave the field blank if there are no extra contributors.
+// This also handles common answers like "N/A" or "none".
+function isIgnoredContributorValue(value) {
+    const ignoredValues = new Set([
+        "n/a", "none", "no additional contributors",
+    ]);
+    return ignoredValues.has(normalize(value));
+}
+
+// Make sure the entered value has a GitHub username format not full name or email address.
+function isValidGitHubUsername(username) {
+    return /^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i.test(username);
+}
+
+// Read extra contributor usernames from the PR description.
+// Expected format:
+//
+// **Additional contributor GitHub username(s):**
+//
+// username1, username2
+//
+// (Leave blank if none. If others contributed, list GitHub username(s), separated by commas.)
+//
+// The instruction line in parentheses is ignored, so contributors do not
+// have to delete it before submitting the PR.
+function parseAdditionalContributors(prBody) {
+    const label = "Additional contributor GitHub username(s):";
+    const escapedLabel = escapeRegex(label);
+
+    const regex = new RegExp(
+        `\\*\\*${escapedLabel}\\*\\*\\s*([\\s\\S]*?)(?=\\r?\\n##|$)`,
+        "i"
+    );
+
+    const match = prBody.match(regex);
+
+    if (!match) {
+        return [];
+    }
+
+    // If someone accidentally repeats the field label, Additional contributor GitHub username(s):
+    // remove it before checking.
+    const repeatedLabelRegex = new RegExp(
+        `^\\*{0,2}${escapedLabel}\\*{0,2}\\s*`,
+        "i"
+    );
+
+    const rawValue = match[1]
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+
+        // Ignore the template instruction line.
+        //(Leave blank if none. If others contributed, list GitHub username(s), separated by commas.)
+        .filter((line) => !line.startsWith("("))
+        // Ignore example lines if examples are added later.
+        .filter((line) => !/^example:/i.test(line))
+        // Remove repeated label text if it was accidentally copied into the field.
+        .map((line) => line.replace(repeatedLabelRegex, "").trim())
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+    if (!rawValue || isIgnoredContributorValue(rawValue)) {
+        return [];
+    }
+
+    // Allow usernames to be separated by commas, spaces, or new lines.
+    const usernames = rawValue
+        .split(/[,\s]+/)
+        .map((username) => normalize(username))
+        .filter(Boolean)
+        .filter((username) => !isIgnoredContributorValue(username));
+
+    const invalidUsernames = usernames.filter(
+        (username) => !isValidGitHubUsername(username)
+    );
+
+    if (invalidUsernames.length > 0) {
+        console.error("Invalid additional contributor GitHub username(s):");
+
+        for (const username of invalidUsernames) {
+            console.error(`- ${username}`);
+        }
+
+        console.error("Use GitHub usernames only, separated by commas.");
+        process.exit(1);
+    }
+
+    return usernames;
+}
+/// End of checking extra contributors
+
+
 
 async function main() {
     // GitHub username.
     const githubLogin = normalize(requiredEnv("GITHUB_LOGIN"));
+
+    // Pull request body, used to read additional contributor usernames.
+    const prBody = process.env.PR_BODY || "";
 
     // Google Sheet info.
     const spreadsheetId = requiredEnv("CLA_SHEET_ID");
@@ -63,7 +169,7 @@ async function main() {
 
     // Find the column that stores contributor GitHub usernames. Column named is Github Username
     // If the CLA response Sheet uses a different column name, update ("github") and ("username") to match the actual header.
-    
+
     const githubColumnIndex = headers.findIndex((header) => {
         const normalizedHeader = normalize(header);
 
@@ -78,16 +184,39 @@ async function main() {
         console.error("Add a required Google Form field named: GitHub username.");
         process.exit(1);
     }
+    // Build a set of all GitHub usernames found in the CLA records.
+    const signedUsers = new Set();
 
-    // Check whether the PR author's GitHub username appears in the CLA records.
-    const signed = dataRows.some((row) => {
-        return normalize(row[githubColumnIndex]) === githubLogin;
-    });
+    for (const row of dataRows) {
+        const username = normalize(row[githubColumnIndex]);
 
-    if (!signed) {
+        if (username) {
+            signedUsers.add(username);
+        }
+    }
+
+    // Build a set of everyone who needs to be checked.
+    // This includes the PR author and any additional contributors listed in the PR body.
+    const contributorsToCheck = new Set();
+
+    contributorsToCheck.add(githubLogin);
+
+    const additionalContributors = parseAdditionalContributors(prBody);
+
+    for (const contributor of additionalContributors) {
+        contributorsToCheck.add(contributor);
+    }
+
+    // Find any required contributor who is not listed in the CLA records.
+    const missingUsers = [...contributorsToCheck].filter(
+        (username) => !signedUsers.has(username)
+    );
+
+    if (missingUsers.length > 0) {
         const message =
-            `GitHub user "${githubLogin}" was not found in the CLA response records. ` +
-            "Please complete the OED Contributor License Agreement or confirm that the GitHub username in the CLA form matches this pull request author's GitHub username.";
+            "The following GitHub username(s) were not found in the CLA response records: " +
+            `${missingUsers.join(", ")}. ` +
+            "Each listed contributor must complete the OED Contributor License Agreement and make sure the GitHub username in the CLA form matches their GitHub account.";
 
         console.error("Signed CLA verification failed.");
         console.error(message);
@@ -95,7 +224,10 @@ async function main() {
         process.exit(1);
     }
 
-    console.log(`Signed CLA verification passed. GitHub user "${githubLogin}" was found.`);
+    // If no missing usernames were found, the CLA verification passes.
+    console.log("Signed CLA verification passed.");
+    console.log(`Verified contributor username(s): ${[...contributorsToCheck].join(", ")}`
+    );
 }
 
 main().catch((error) => {

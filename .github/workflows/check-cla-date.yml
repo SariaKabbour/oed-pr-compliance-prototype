@@ -1,4 +1,4 @@
-name: Signed CLA Verification
+name: CLA Date Verification
 
 on:
   pull_request_target:
@@ -9,8 +9,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  verify-signed-cla:
-    name: Verify PR contributors signed the CLA
+  verify-cla-date:
+    name: Verify CLA signing date
     runs-on: ubuntu-latest
 
     steps:
@@ -26,14 +26,14 @@ jobs:
         with:
           node-version: 20
 
-      # Install the Google Sheets API client used by scripts/check-cla.js.
+      # Install the Google Sheets API client used by scripts/check-cla-date.js.
       - name: Install Google Sheets client
         run: npm install googleapis
 
-      # Compare the PR author's username and any listed additional contributors against the CLA response Sheet.
-      # Sensitive values are stored in GitHub Actions secrets, not in the repo.
-      - name: Verify PR contributors signed the CLA
-        run: node scripts/check-cla.js
+      # Check that the manual date entered in the CLA form is close to
+      # the automatic Google Form timestamp for the same GitHub username.
+      - name: Verify CLA signing date
+        run: node scripts/check-cla-date.js
         env:
           GITHUB_LOGIN: ${{ github.event.pull_request.user.login }}
           PR_BODY: ${{ github.event.pull_request.body }}
