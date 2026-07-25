@@ -5,7 +5,8 @@
 - [ ] No AI assistance was used.
 - [ ] AI assistance was used.
 
-If AI assistance was used, identify the tool or tools and briefly describe how they were used. Examples include assistance with code, documentation, debugging, testing, translation, explanation, or review.
+If AI assistance was used, both fields below are required. Identify the AI tool or tools and briefly explain how they were used. Examples include assistance with code, documentation, debugging, testing, translation, explanation, or review.
+If the check fails, click the three-dot menu in the upper-right corner of the pull request description, select **Edit**, complete the required fields, and click **Update comment**.
 
 **AI tool(s) used:**
 
