@@ -130,11 +130,11 @@ if (aiUsedChecked) {
         missing.push("Project requirements verification checkbox");
     }
 
-    //checks if I take full responsibility for the correctness, quality,
-    // and licensing compatibility of this contribution box was checked.
+    //Checks that the pull request author and any listed contributors
+    //reviewed their work and followed OED quality and licensing requirements.
     if (
         !hasCheckedBox(
-            "I take full responsibility for the correctness, quality, and licensing compatibility of this contribution."
+            "I confirm that I and any listed contributors reviewed our work and followed OED quality and licensing requirements."
         )
     ) {
         missing.push("Responsibility checkbox");
