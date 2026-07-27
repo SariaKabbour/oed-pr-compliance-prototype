@@ -20,7 +20,6 @@ function requiredEnv(name) {
 }
 
 // Normalize GitHub usernames so comparisons are consistent.
-// Example: "@SariaKabbour" and "sariakabbour" both become "sariakabbour".
 function normalizeUsername(value) {
   return String(value || "")
     .trim()
@@ -62,15 +61,10 @@ function isValidGitHubUsername(username) {
 }
 
 // Read extra contributor usernames from the PR description.
-//
 // Expected format:
-//
 // **Additional contributor GitHub username(s):**
-//
 // username1, username2
-//
 // (Leave blank if none. If others contributed, list GitHub username(s), separated by commas.)
-//
 // The instruction line in parentheses is ignored.
 function parseAdditionalContributors(prBody) {
   const label = "Additional contributor GitHub username(s):";
@@ -207,7 +201,7 @@ function datesAreCloseEnough(timestampValue, manualDateValue) {
   if (timestampDay === null || manualDay === null) {
     return false;
   }
-
+// buffer day
   return Math.abs(timestampDay - manualDay) <= 1;
 }
 
