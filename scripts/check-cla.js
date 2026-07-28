@@ -219,7 +219,6 @@ async function main() {
             "Each listed contributor must complete the OED Contributor License Agreement and make sure the GitHub username in the CLA form matches their GitHub account.";
 
         console.error("Signed CLA verification failed.");
-<<<<<<< Updated upstream
         console.error(message);
         console.error(`::error title=Signed CLA Verification Failed::${message}`);
         process.exit(1);
@@ -233,7 +232,6 @@ async function main() {
 
 main().catch((error) => {
     console.error("Unexpected error while checking CLA:");
-=======
         console.error("");
         console.error(
             "No matching CLA submission was found for the following GitHub username(s):"
@@ -270,7 +268,6 @@ main().catch((error) => {
 
 main().catch((error) => {
     console.error("Unexpected error while checking signed CLA verification.");
->>>>>>> Stashed changes
     console.error(error);
     process.exit(1);
 });
