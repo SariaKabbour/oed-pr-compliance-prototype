@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   check-ai-disclosure:
-    name: Validate PR AI Disclosure
     runs-on: ubuntu-latest
 
     steps:

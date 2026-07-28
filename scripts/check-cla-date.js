@@ -201,7 +201,7 @@ function datesAreCloseEnough(timestampValue, manualDateValue) {
   if (timestampDay === null || manualDay === null) {
     return false;
   }
-  // buffer day
+// buffer day
   return Math.abs(timestampDay - manualDay) <= 1;
 }
 
@@ -306,72 +306,53 @@ async function main() {
       usersWithInvalidDates.push(contributor);
     }
   }
-  //failure section
+
   if (usersNotFound.length > 0 || usersWithInvalidDates.length > 0) {
     console.error("CLA date verification failed.");
 
     if (usersNotFound.length > 0) {
-      console.error("");
       console.error(
-        "No CLA submission was found for the following GitHub username(s):"
+        "The following GitHub username(s) were not found in the CLA response records:"
       );
 
       for (const username of usersNotFound) {
         console.error(`- ${username}`);
       }
-
-      console.error("");
-      console.error(
-        "Each listed contributor must submit the OED Contributor License Agreement using the exact GitHub username shown above."
-      );
     }
 
     if (usersWithInvalidDates.length > 0) {
-      console.error("");
       console.error(
-        "A CLA submission was found for the following GitHub username(s), but the signing date was invalid:"
+        "The following GitHub username(s) were found, but no valid CLA date was found:"
       );
 
       for (const username of usersWithInvalidDates) {
         console.error(`- ${username}`);
       }
 
-      console.error("");
       console.error(
-        "The date entered in the CLA form must match the date on which the form was submitted. A one-day difference is allowed for time zone differences."
+        "The date entered in the CLA form must match the automatic form timestamp, allowing one day before or after for time zone differences."
       );
 
-      console.error("");
-      console.error("How to fix this:");
-      console.error("1. Open the OED Contributor License Agreement link in the pull request description.");
-      console.error("2. Submit the CLA form again. Duplicate submissions are allowed.");
-      console.error("3. Enter the same GitHub username listed above.");
-      console.error("4. In the date field, enter today's date—the date on which you are submitting the form.");
-      console.error("5. Return to the pull request after submitting the form.");
-      console.error("6. Edit the pull request description, uncheck the Contributor License Agreement checkbox, and save the description.");
-      console.error("7. Edit the pull request description again, re-check the Contributor License Agreement checkbox, and save it.");
-      console.error("8. Saving the updated pull request description will automatically run the CLA date verification check again.");
-    }
-
-    const errorDetails = [];
-
-    if (usersNotFound.length > 0) {
-      errorDetails.push(
-        `No CLA submission was found for: ${usersNotFound.join(", ")}.`
-      );
-    }
-
-    if (usersWithInvalidDates.length > 0) {
-      errorDetails.push(
-        `A CLA submission was found, but the signing date was invalid for: ${usersWithInvalidDates.join(", ")}. ` +
-        "Submit the CLA form again using today's date, then edit and save the pull request description to rerun this check."
+      console.error(
+        "Please resubmit the CLA form using the date you submit the form. Duplicate submissions are okay; this checker accepts any valid row for the same GitHub username."
       );
     }
 
     console.error(
-      `::error title=CLA Date Verification Failed::${errorDetails.join(" ")}`
+      "::error title=CLA Date Verification Failed::One or more contributors are missing a valid CLA signing date."
     );
 
     process.exit(1);
   }
+
+  console.log("CLA date verification passed.");
+  console.log(
+    `Verified valid CLA date for username(s): ${[...contributorsToCheck].join(", ")}`
+  );
 }
+
+main().catch((error) => {
+  console.error("Unexpected error while checking CLA dates:");
+  console.error(error);
+  process.exit(1);
+});
