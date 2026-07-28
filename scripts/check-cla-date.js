@@ -356,12 +356,5 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-  console.log("CLA date verification passed.");
-} // End of main()
-
-main().catch((error) => {
-  console.error("Unexpected error while checking CLA dates.");
-  console.error(error);
-  process.exit(1);
-});
+ 
 
