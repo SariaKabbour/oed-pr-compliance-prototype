@@ -154,13 +154,13 @@ if (missing.length > 0) {
 
     console.error("");
     console.error("How to fix the pull request:");
-    console.error("1. Open the pull request body tab.");
+    console.error("1. Open the pull request Conversation tab.");
     console.error("2. Click the three-dot menu (...) on the pull request description.");
     console.error("3. Select Edit.");
     console.error("4. Complete the missing AI disclosure information.");
     console.error("5. Click Update comment.");
     console.error("");
-    console.error("The AI disclosure check will run automatically after the description is updated.");
+    console.error("The AI disclosure check will run again after the description is updated.");
 
     //ends loop
     process.exit(1);
