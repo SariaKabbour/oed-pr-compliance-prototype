@@ -22,9 +22,9 @@ If AI assistance was used, check each item after completing your own review.
 
 ## Contributor License Agreement
 
-The automated Signed CLA Verification check compares the pull request author's GitHub username against OED's CLA response records. If this check fails, the pull request author may need to complete the OED Contributor License Agreement and make sure the GitHub username in the CLA record matches their GitHub account.
+The automated Signed CLA Verification check compares the pull request author and any listed additional contributors against OED's CLA response records.
 
-- [ ] I acknowledge that I have signed the OED Contributor License Agreement.
+If the check fails, complete the OED Contributor License Agreement and make sure the GitHub username in the CLA record matches the contributor's GitHub account.
 
 **Additional contributor GitHub username(s):**
 
