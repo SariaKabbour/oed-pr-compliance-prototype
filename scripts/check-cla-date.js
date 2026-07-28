@@ -201,7 +201,7 @@ function datesAreCloseEnough(timestampValue, manualDateValue) {
   if (timestampDay === null || manualDay === null) {
     return false;
   }
-// buffer day
+  // buffer day
   return Math.abs(timestampDay - manualDay) <= 1;
 }
 
@@ -311,31 +311,24 @@ async function main() {
     console.error("CLA date verification failed.");
 
     if (usersNotFound.length > 0) {
-      console.error(
-        "The following GitHub username(s) were not found in the CLA response records:"
-      );
+      console.error("The following GitHub username(s) were not found in the CLA response records:");
 
       for (const username of usersNotFound) {
         console.error(`- ${username}`);
       }
+
     }
 
+    // Error when user enters invalid date
     if (usersWithInvalidDates.length > 0) {
-      console.error(
-        "The following GitHub username(s) were found, but no valid CLA date was found:"
-      );
+      console.error("The following GitHub username(s) were found, but the date is invalid:");
 
       for (const username of usersWithInvalidDates) {
         console.error(`- ${username}`);
       }
 
-      console.error(
-        "The date entered in the CLA form must match the automatic form timestamp, allowing one day before or after for time zone differences."
-      );
-
-      console.error(
-        "Please resubmit the CLA form using the date you submit the form. Duplicate submissions are okay; this checker accepts any valid row for the same GitHub username."
-      );
+      console.error("The date entered in the CLA is invalid!");
+      console.error("Please resubmit the CLA form.");
     }
 
     console.error(
@@ -346,9 +339,7 @@ async function main() {
   }
 
   console.log("CLA date verification passed.");
-  console.log(
-    `Verified valid CLA date for username(s): ${[...contributorsToCheck].join(", ")}`
-  );
+  console.log(`Verified valid CLA date for username(s): ${[...contributorsToCheck].join(", ")}`);
 }
 
 main().catch((error) => {
@@ -356,5 +347,6 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
- 
+
+
 
