@@ -219,6 +219,7 @@ async function main() {
             "Each listed contributor must complete the OED Contributor License Agreement and make sure the GitHub username in the CLA form matches their GitHub account.";
 
         console.error("Signed CLA verification failed.");
+<<<<<<< Updated upstream
         console.error(message);
         console.error(`::error title=Signed CLA Verification Failed::${message}`);
         process.exit(1);
@@ -232,6 +233,44 @@ async function main() {
 
 main().catch((error) => {
     console.error("Unexpected error while checking CLA:");
+=======
+        console.error("");
+        console.error(
+            "No matching CLA submission was found for the following GitHub username(s):"
+        );
+
+        for (const username of missingUsers) {
+            console.error(`- ${username}`);
+        }
+
+        console.error("");
+        console.error("How to fix this:");
+        console.error("1. Open the OED Contributor License Agreement link in the pull request description.");
+        console.error("2. Each contributor listed above must complete and submit the CLA form.");
+        console.error("3. In the CLA form, each contributor must enter their GitHub username exactly as listed above.");
+        console.error("4. Return to the pull request and check the usernames in the Additional contributor GitHub username(s) field. Correct any missing or incorrect usernames.");
+        console.error("5. Edit the pull request description, or uncheck and re-check the Contributor License Agreement checkbox, and save the description.");
+        console.error("6. Saving the updated pull request description will automatically run the CLA verification check again.");
+
+        const annotationMessage =
+            `No matching CLA submission was found for: ${missingUsers.join(", ")}. ` +
+            "Each listed contributor must submit the CLA using their exact GitHub username. " +
+            "After signing, correct any contributor usernames if needed, then edit and save " +
+            "the pull request description to rerun this verification.";
+
+        console.error(
+            `::error title=Signed CLA Verification Failed::${annotationMessage}`
+        );
+
+        process.exit(1);
+    }
+
+    console.log("Signed CLA verification passed.");
+} // End of main()
+
+main().catch((error) => {
+    console.error("Unexpected error while checking signed CLA verification.");
+>>>>>>> Stashed changes
     console.error(error);
     process.exit(1);
 });
